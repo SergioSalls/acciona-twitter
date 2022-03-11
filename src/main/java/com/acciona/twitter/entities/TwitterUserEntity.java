@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -12,18 +14,12 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TwitterEntity {
+public class TwitterUserEntity {
 
     @Id
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "name")
     private String name;
-
-    private String location;
-
-    private String text;
-
-    private Boolean isVerified;
-
-
 }

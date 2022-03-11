@@ -1,4 +1,4 @@
-server.port: 9107
+server.port: 8080
 spring.mvc.pathmatch.matching-strategy: ant_path_matcher
 
 spring.h2.console.enabled: true
@@ -9,4 +9,11 @@ spring.datasource.password: admin
 spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
 
 twitter:
-  languages: description here
+  cron:
+    time:
+      seconds: 30
+  minfollowers: 1500
+  languages:
+    - es
+    - fr
+    - it

@@ -1,12 +1,9 @@
 package com.acciona.twitter.controllers;
 
-import com.acciona.twitter.entities.TwitterEntity;
+import com.acciona.twitter.entities.TweetEntity;
 import com.acciona.twitter.services.TwitterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import twitter4j.TwitterException;
 
 @RestController
@@ -17,12 +14,17 @@ public class TwitterController {
     private TwitterService twitterService;
 
     @GetMapping()
-    public Iterable<TwitterEntity> getTweets() throws TwitterException {
+    public Iterable<TweetEntity> getTweets() throws TwitterException {
         return twitterService.getTweets();
     }
 
     @PostMapping()
-    public void saveTweet(TwitterEntity twitterEntity) throws TwitterException {
-        twitterService.saveTweet(twitterEntity);
+    public void saveTweet(TweetEntity tweetEntity) throws TwitterException {
+        twitterService.saveTweet(tweetEntity);
+    }
+
+    @PutMapping("/validate-tweet/{id}")
+    public void validateTweet(@PathVariable final String id) throws TwitterException {
+        twitterService.validateTweet(id);
     }
 }

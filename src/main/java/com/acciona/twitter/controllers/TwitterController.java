@@ -6,8 +6,8 @@ import com.acciona.twitter.services.HashtagService;
 import com.acciona.twitter.services.TwitterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import twitter4j.TwitterException;
 
 @RestController
 @RequestMapping("/twitter")
@@ -24,14 +24,19 @@ public class TwitterController {
         return twitterService.getTweets(page);
     }
 
+    @GetMapping("/tweet/{id}")
+    public TweetEntity getTweet(@PathVariable final String id) {
+        return twitterService.getTweet(id);
+    }
+
+    @GetMapping("/validated-tweets-user/{userId}")
+    public Iterable<TweetEntity> getValidatedTweetsByUser(@PathVariable final String userId) {
+        return twitterService.getValidatedTweetsByUser(userId);
+    }
+
     @GetMapping("/classification/hashtags")
     public Iterable<HashtagEntity> getClassificationHashtags() {
         return hashtagService.getHashtagClassification();
-    }
-
-    @PutMapping("/validated-tweets-user/{userId}")
-    public Iterable<TweetEntity> getValidatedTweetsByUser(@PathVariable final Long userId) {
-        return twitterService.getValidatedTweetsByUser(userId);
     }
 
     @PostMapping()
@@ -40,7 +45,7 @@ public class TwitterController {
     }
 
     @PutMapping("/validate-tweet/{id}")
-    public void validateTweet(@PathVariable final String id) throws TwitterException {
-        twitterService.validateTweet(id);
+    public ResponseEntity<String> validateTweet(@PathVariable final String id) {
+        return twitterService.validateTweet(id);
     }
 }

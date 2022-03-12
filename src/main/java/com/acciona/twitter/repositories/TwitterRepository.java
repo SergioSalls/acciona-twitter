@@ -11,5 +11,5 @@ public interface TwitterRepository extends PagingAndSortingRepository<TweetEntit
 
     Page<TweetEntity> findAll(Pageable pageable);
 
-    Iterable<TweetEntity> findByUserIdAndIsValidated(Long userId, Boolean isValidated);
+    Iterable<TweetEntity> findByUserIdAndIsValidated(String userId, Boolean isValidated);
 }

@@ -13,6 +13,7 @@ import java.util.List;
 @ConfigurationProperties("twitter")
 public class TwitterPropertiesConfig {
 
+    private Integer queryCount;
     private Integer minFollowers;
     private Integer minHashtagCount;
     private List<String> languages;

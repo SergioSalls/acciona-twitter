@@ -31,7 +31,7 @@ public class Scheduler {
 
         for(String criteria: twitterProperties.getUsersToSearch()) {
             Query query = new Query(criteria);
-            query.setCount(1000);
+            query.setCount(twitterProperties.getQueryCount());
             query.setResultType(Query.ResultType.recent);
 
             QueryResult queryResult = twitter.search(query);
@@ -53,7 +53,7 @@ public class Scheduler {
 
     private TweetEntity twitterEntity(final Status timeline) {
         TwitterUserEntity twitterUserEntity = TwitterUserEntity.builder()
-                .id(timeline.getUser().getId())
+                .id(String.valueOf(timeline.getUser().getId()))
                 .name(timeline.getUser().getName())
                 .build();
         return TweetEntity.builder()

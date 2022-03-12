@@ -4,6 +4,7 @@ import com.acciona.twitter.configurations.TwitterPropertiesConfig;
 import com.acciona.twitter.entities.HashtagEntity;
 import com.acciona.twitter.repositories.HashtagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,13 +24,17 @@ public class HashtagService {
 
     public void saveHashtag(final String name) {
         Optional<HashtagEntity> hashtagEntity = hashtagRepository.findById(name);
-        if(hashtagEntity.isPresent()) {
-            hashtagEntity.get().setCount(hashtagEntity.get().getCount()+ 1);
-            hashtagRepository.save(hashtagEntity.get());
-        }
-        else {
-            hashtagRepository.save(HashtagEntity.builder().name(name).count(1).build());
-        }
+
+        hashtagEntity.ifPresentOrElse((he) ->
+                {
+                    he.setCount(he.getCount()+ 1);
+                    hashtagRepository.save(he);
+                },
+                () -> {
+                    HashtagEntity he = HashtagEntity.builder().name(name).count(1).build();
+                    hashtagRepository.save(he);
+                }
+        );
     }
 
 }

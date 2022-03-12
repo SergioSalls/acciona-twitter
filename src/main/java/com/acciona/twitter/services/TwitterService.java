@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import twitter4j.TwitterException;
+
 import java.util.Optional;
 
 @Service
@@ -21,7 +23,11 @@ public class TwitterService {
         return twitterRepository.findAll(pageable);
     }
 
-    public Iterable<TweetEntity> getValidatedTweetsByUser(final Long userId) {
+    public TweetEntity getTweet(final String id) {
+        return twitterRepository.findById(id).orElse(null);
+    }
+
+    public Iterable<TweetEntity> getValidatedTweetsByUser(final String userId) {
         return twitterRepository.findByUserIdAndIsValidated(userId, true);
     }
 
@@ -33,13 +39,13 @@ public class TwitterService {
         twitterRepository.save(tweetEntity);
     }
 
-    public void validateTweet(final String id) throws TwitterException {
-        Optional<TweetEntity> tweetEntity = twitterRepository.findById(id);
+    public ResponseEntity<String> validateTweet(final String id) {
+        Optional<TweetEntity> tweetEntityOld = twitterRepository.findById(id);
 
-        TweetEntity tweetEntityToSave = tweetEntity.map(t ->
-                TweetEntity.builder().id(t.getId()).user(t.getUser()).location(t.getLocation()).text(t.getText()).isValidated(true).build()
-        ).orElseThrow(()-> new TwitterException("El tweet que se trata de validar no existe"));
-
-        twitterRepository.save(tweetEntityToSave);
+        return tweetEntityOld.map(t -> {
+            TweetEntity tweetEntity = TweetEntity.builder().id(t.getId()).user(t.getUser()).location(t.getLocation()).text(t.getText()).isValidated(true).build();
+            twitterRepository.save(tweetEntity);
+            return new ResponseEntity<>("Tweet validado correctamente", HttpStatus.OK);
+        }).orElse(new ResponseEntity<>("El tweet a validar no existe", HttpStatus.NOT_FOUND));
     }
 }

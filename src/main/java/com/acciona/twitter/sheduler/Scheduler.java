@@ -4,7 +4,7 @@ import com.acciona.twitter.configurations.TwitterPropertiesConfig;
 import com.acciona.twitter.entities.TweetEntity;
 import com.acciona.twitter.entities.TwitterUserEntity;
 import com.acciona.twitter.services.HashtagService;
-import com.acciona.twitter.services.TwitterService;
+import com.acciona.twitter.services.TweetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class Scheduler {
 
     @Autowired
-    private TwitterService twitterService;
+    private TweetService tweetService;
 
     @Autowired
     private HashtagService hashtagService;
@@ -43,7 +43,7 @@ public class Scheduler {
     private void saveTimeLineAccordingToFollowersAndLanguages(List<Status> timelines){
         timelines.forEach(timeline -> {
             if(canSaveTweetEntity(timeline)){
-                twitterService.saveTweet(twitterEntity(timeline));
+                tweetService.saveTweet(twitterEntity(timeline));
 
                 List<HashtagEntity> hashtagEntities = Arrays.asList(timeline.getHashtagEntities());
                 hashtagEntities.forEach(he -> hashtagService.saveHashtag(he.getText()));
@@ -66,7 +66,7 @@ public class Scheduler {
     }
 
     private Boolean canSaveTweetEntity(final Status timeline){
-        return !twitterService.existTweetById(String.valueOf(timeline.getId()))
+        return !tweetService.existTweetById(String.valueOf(timeline.getId()))
                 && timeline.getUser().getFollowersCount() > twitterProperties.getMinFollowers()
                 && twitterProperties.getLanguages().contains(timeline.getLang());
     }

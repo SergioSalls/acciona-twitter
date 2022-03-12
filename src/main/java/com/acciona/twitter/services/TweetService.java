@@ -1,7 +1,7 @@
 package com.acciona.twitter.services;
 
 import com.acciona.twitter.entities.TweetEntity;
-import com.acciona.twitter.repositories.TwitterRepository;
+import com.acciona.twitter.repositories.TweetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,38 +13,38 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class TwitterService {
+public class TweetService {
 
     @Autowired
-    private TwitterRepository twitterRepository;
+    private TweetRepository tweetRepository;
 
     public Page<TweetEntity> getTweets(final int page) {
         Pageable pageable = PageRequest.of(page, 100);
-        return twitterRepository.findAll(pageable);
+        return tweetRepository.findAll(pageable);
     }
 
     public TweetEntity getTweet(final String id) {
-        return twitterRepository.findById(id).orElse(null);
+        return tweetRepository.findById(id).orElse(null);
     }
 
     public Iterable<TweetEntity> getValidatedTweetsByUser(final String userId) {
-        return twitterRepository.findByUserIdAndIsValidated(userId, true);
+        return tweetRepository.findByUserIdAndIsValidated(userId, true);
     }
 
     public boolean existTweetById(final String id){
-        return twitterRepository.existsById(id);
+        return tweetRepository.existsById(id);
     }
 
     public void saveTweet(TweetEntity tweetEntity) {
-        twitterRepository.save(tweetEntity);
+        tweetRepository.save(tweetEntity);
     }
 
     public ResponseEntity<String> validateTweet(final String id) {
-        Optional<TweetEntity> tweetEntityOld = twitterRepository.findById(id);
+        Optional<TweetEntity> tweetEntityOld = tweetRepository.findById(id);
 
         return tweetEntityOld.map(t -> {
             TweetEntity tweetEntity = TweetEntity.builder().id(t.getId()).user(t.getUser()).location(t.getLocation()).text(t.getText()).isValidated(true).build();
-            twitterRepository.save(tweetEntity);
+            tweetRepository.save(tweetEntity);
             return new ResponseEntity<>("Tweet validado correctamente", HttpStatus.OK);
         }).orElse(new ResponseEntity<>("El tweet a validar no existe", HttpStatus.NOT_FOUND));
     }

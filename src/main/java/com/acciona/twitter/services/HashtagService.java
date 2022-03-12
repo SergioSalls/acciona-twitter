@@ -4,7 +4,6 @@ import com.acciona.twitter.configurations.TwitterPropertiesConfig;
 import com.acciona.twitter.entities.HashtagEntity;
 import com.acciona.twitter.repositories.HashtagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,6 +16,10 @@ public class HashtagService {
 
     @Autowired
     private TwitterPropertiesConfig twitterProperties;
+
+    public Iterable<HashtagEntity> getHashtags() {
+        return hashtagRepository.findAll();
+    }
 
     public Iterable<HashtagEntity> getHashtagClassification(){
         return hashtagRepository.findByCountGreaterThanOrderByCountDesc(twitterProperties.getMinHashtagCount());

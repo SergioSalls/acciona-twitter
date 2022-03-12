@@ -3,9 +3,11 @@ package com.acciona.twitter.services;
 import com.acciona.twitter.entities.TweetEntity;
 import com.acciona.twitter.repositories.TwitterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import twitter4j.TwitterException;
-
 import java.util.Optional;
 
 @Service
@@ -14,14 +16,21 @@ public class TwitterService {
     @Autowired
     private TwitterRepository twitterRepository;
 
-    public Iterable<TweetEntity> getTweets() {
-        return twitterRepository.findAll();
+    public Page<TweetEntity> getTweets(final int page) {
+        Pageable pageable = PageRequest.of(page, 100);
+        return twitterRepository.findAll(pageable);
+    }
+
+    public Iterable<TweetEntity> getValidatedTweetsByUser(final Long userId) {
+        return twitterRepository.findByUserIdAndIsValidated(userId, true);
+    }
+
+    public boolean existTweetById(final String id){
+        return twitterRepository.existsById(id);
     }
 
     public void saveTweet(TweetEntity tweetEntity) {
-        if(!twitterRepository.existsById(tweetEntity.getId())){
-            twitterRepository.save(tweetEntity);
-        }
+        twitterRepository.save(tweetEntity);
     }
 
     public void validateTweet(final String id) throws TwitterException {

@@ -22,7 +22,7 @@ public class TweetEntity {
     @Column(name = "location")
     private String location;
 
-    @Column(name = "text")
+    @Column(name = "text", length = 500)
     private String text;
 
     @Column(name = "is_validated")

@@ -3,11 +3,14 @@ package com.acciona.twitter.sheduler;
 import com.acciona.twitter.configurations.TwitterPropertiesConfig;
 import com.acciona.twitter.entities.TweetEntity;
 import com.acciona.twitter.entities.TwitterUserEntity;
+import com.acciona.twitter.services.HashtagService;
 import com.acciona.twitter.services.TwitterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import twitter4j.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -17,44 +20,38 @@ public class Scheduler {
     private TwitterService twitterService;
 
     @Autowired
+    private HashtagService hashtagService;
+
+    @Autowired
     private TwitterPropertiesConfig twitterProperties;
 
-    @Scheduled(fixedRateString = "${twitter.cron.time.seconds}", timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedRateString = "${twitter.cron.seconds}", timeUnit = TimeUnit.SECONDS)
     public void getTweets() throws TwitterException {
-        Paging page = new Paging(1,1);
-        Twitter twitter = new TwitterFactory().getInstance();
+        Twitter twitter = TwitterFactory.getSingleton();
 
-        System.out.println(twitter.getMentionsTimeline());
-        ResponseList<Status> timelines = twitter.getUserTimeline("elmundoes", page);
+        for(String criteria: twitterProperties.getUsersToSearch()) {
+            Query query = new Query(criteria);
+            query.setCount(1000);
+            query.setResultType(Query.ResultType.recent);
 
-        System.out.println("------------------------------");
-        saveTimeLineAccordingToFollowersAndLanguages(timelines);
+            QueryResult queryResult = twitter.search(query);
+
+            saveTimeLineAccordingToFollowersAndLanguages(queryResult.getTweets());
+        }
     }
 
-    private void saveTimeLineAccordingToFollowersAndLanguages(ResponseList<Status> timelines){
+    private void saveTimeLineAccordingToFollowersAndLanguages(List<Status> timelines){
         timelines.forEach(timeline -> {
-            if(timeline.getUser().getFollowersCount() > twitterProperties.getMinfollowers()
-                    && twitterProperties.getLanguages().contains(timeline.getLang())){
+            if(canSaveTweetEntity(timeline)){
                 twitterService.saveTweet(twitterEntity(timeline));
-                System.out.println(timeline.getId());
-                System.out.println(timeline.getUser().getName());
-                System.out.println(timeline.getText());
-                System.out.println(timeline.getUser().getLocation());
-                System.out.println(timeline.getUser().getFollowersCount());
-                System.out.println("--------------------------------------");
-            }
-            else {
-                System.out.println("No cumple con los requisitos mínimos para ser guardado: ");
-                System.out.println(timeline.getId());
-                System.out.println(timeline.getUser().getName());
-                System.out.println(timeline.getText());
-                System.out.println(timeline.getUser().getLocation());
-                System.out.println(timeline.getUser().getFollowersCount());
+
+                List<HashtagEntity> hashtagEntities = Arrays.asList(timeline.getHashtagEntities());
+                hashtagEntities.forEach(he -> hashtagService.saveHashtag(he.getText()));
             }
         });
     }
 
-    private TweetEntity twitterEntity(Status timeline) {
+    private TweetEntity twitterEntity(final Status timeline) {
         TwitterUserEntity twitterUserEntity = TwitterUserEntity.builder()
                 .id(timeline.getUser().getId())
                 .name(timeline.getUser().getName())
@@ -66,6 +63,12 @@ public class Scheduler {
                 .text(timeline.getText())
                 .isValidated(false)
                 .build();
+    }
+
+    private Boolean canSaveTweetEntity(final Status timeline){
+        return !twitterService.existTweetById(String.valueOf(timeline.getId()))
+                && timeline.getUser().getFollowersCount() > twitterProperties.getMinFollowers()
+                && twitterProperties.getLanguages().contains(timeline.getLang());
     }
 }
 

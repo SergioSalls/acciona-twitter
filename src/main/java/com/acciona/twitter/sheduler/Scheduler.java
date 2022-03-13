@@ -30,15 +30,9 @@ public class Scheduler {
 
     @Scheduled(fixedRateString = "${twitter.cron.seconds}", timeUnit = TimeUnit.SECONDS)
     public void getTweets() throws TwitterException {
-        for(String criteria: twitterProperties.getUsersToSearch()) {
-            Query query = new Query(criteria);
-            query.setCount(twitterProperties.getUserQueryCount());
-            query.setResultType(Query.ResultType.recent);
-
-            QueryResult queryResult = twitter.search(query);
-
-            saveTimeLineAccordingToFollowersAndLanguages(queryResult.getTweets());
-        }
+        Paging paging = new Paging();
+        paging.setCount(twitterProperties.getQueryCount());
+        saveTimeLineAccordingToFollowersAndLanguages(twitter.getHomeTimeline(paging));
     }
 
     private void saveTimeLineAccordingToFollowersAndLanguages(List<Status> timelines){

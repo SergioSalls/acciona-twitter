@@ -13,10 +13,9 @@ import java.util.List;
 @ConfigurationProperties("twitter")
 public class TwitterPropertiesConfig {
 
-    private Integer userQueryCount;
+    private Integer queryCount;
     private Integer minFollowers;
     private Integer minHashtagCount;
     private Integer maxTweetPage;
     private List<String> languages;
-    private List<String> usersToSearch;
 }

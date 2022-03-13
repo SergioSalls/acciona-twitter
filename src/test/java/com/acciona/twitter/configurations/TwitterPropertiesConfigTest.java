@@ -16,11 +16,10 @@ public class TwitterPropertiesConfigTest {
 
     @Test
     void twitterPropertiesConfig() {
-        assertNotNull(twitterPropertiesConfig.getUserQueryCount());
+        assertNotNull(twitterPropertiesConfig.getQueryCount());
         assertNotNull(twitterPropertiesConfig.getMinFollowers());
         assertNotNull(twitterPropertiesConfig.getMinHashtagCount());
         assertNotNull(twitterPropertiesConfig.getMaxTweetPage());
         assertNotNull(twitterPropertiesConfig.getLanguages());
-        assertNotNull(twitterPropertiesConfig.getUsersToSearch());
     }
 }

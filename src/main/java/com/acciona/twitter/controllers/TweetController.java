@@ -19,7 +19,7 @@ public class TweetController {
         return tweetService.getAll(page);
     }
 
-    @GetMapping("/tweet/{id}")
+    @GetMapping("/{id}")
     public TweetEntity get(@PathVariable final String id) {
         return tweetService.get(id);
     }

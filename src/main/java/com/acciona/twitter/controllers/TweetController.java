@@ -15,23 +15,18 @@ public class TweetController {
     private TweetService tweetService;
 
     @GetMapping("/all")
-    public Page<TweetEntity> getTweets(@RequestParam(defaultValue = "0") final int page) {
-        return tweetService.getTweets(page);
+    public Page<TweetEntity> getAllPaginated(@RequestParam(defaultValue = "0") final int page) {
+        return tweetService.getAll(page);
     }
 
     @GetMapping("/tweet/{id}")
-    public TweetEntity getTweet(@PathVariable final String id) {
-        return tweetService.getTweet(id);
+    public TweetEntity get(@PathVariable final String id) {
+        return tweetService.get(id);
     }
 
     @GetMapping("/validated-tweets-user/{userId}")
     public Iterable<TweetEntity> getValidatedTweetsByUser(@PathVariable final String userId) {
         return tweetService.getValidatedTweetsByUser(userId);
-    }
-
-    @PostMapping()
-    public void saveTweet(TweetEntity tweetEntity) {
-        tweetService.saveTweet(tweetEntity);
     }
 
     @PutMapping("/validate-tweet/{id}")

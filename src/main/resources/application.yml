@@ -11,9 +11,10 @@ spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
 twitter:
   cron:
     seconds: 30
-  query-count: 100
+  user-query-count: 100
   min-followers: 1500
-  min-hashtagcount: 10
+  min-hashtag-count: 10
+  max-tweet-page: 100
   languages:
     - es
     - fr
@@ -28,4 +29,4 @@ twitter:
     - larepubblica
     - libération
     - CNN
-    - lavanguardia
+    - vanguardia

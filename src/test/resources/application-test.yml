@@ -1,0 +1,22 @@
+twitter:
+  cron:
+    seconds: 30
+  query-count: 10
+  min-followers: 1500
+  min-hashtag-count: 10
+  max-tweet-page: 100
+  languages:
+    - es
+    - fr
+    - it
+  users-to-search:
+    - lemonde
+    - elmundo
+    - theguardian
+    - NewIzvestiya
+    - elpais
+    - lejournal
+    - larepubblica
+    - libération
+    - CNN
+    - lavanguardia

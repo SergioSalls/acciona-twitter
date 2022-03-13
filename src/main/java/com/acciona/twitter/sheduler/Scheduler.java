@@ -17,6 +17,9 @@ import java.util.concurrent.TimeUnit;
 public class Scheduler {
 
     @Autowired
+    private Twitter twitter;
+
+    @Autowired
     private TweetService tweetService;
 
     @Autowired
@@ -27,11 +30,9 @@ public class Scheduler {
 
     @Scheduled(fixedRateString = "${twitter.cron.seconds}", timeUnit = TimeUnit.SECONDS)
     public void getTweets() throws TwitterException {
-        Twitter twitter = TwitterFactory.getSingleton();
-
         for(String criteria: twitterProperties.getUsersToSearch()) {
             Query query = new Query(criteria);
-            query.setCount(twitterProperties.getQueryCount());
+            query.setCount(twitterProperties.getUserQueryCount());
             query.setResultType(Query.ResultType.recent);
 
             QueryResult queryResult = twitter.search(query);
@@ -51,6 +52,12 @@ public class Scheduler {
         });
     }
 
+    private Boolean canSaveTweetEntity(final Status timeline){
+        return !tweetService.existTweetById(String.valueOf(timeline.getId()))
+                && timeline.getUser().getFollowersCount() > twitterProperties.getMinFollowers()
+                && twitterProperties.getLanguages().contains(timeline.getLang());
+    }
+
     private TweetEntity twitterEntity(final Status timeline) {
         TwitterUserEntity twitterUserEntity = TwitterUserEntity.builder()
                 .id(String.valueOf(timeline.getUser().getId()))
@@ -63,12 +70,6 @@ public class Scheduler {
                 .text(timeline.getText())
                 .isValidated(false)
                 .build();
-    }
-
-    private Boolean canSaveTweetEntity(final Status timeline){
-        return !tweetService.existTweetById(String.valueOf(timeline.getId()))
-                && timeline.getUser().getFollowersCount() > twitterProperties.getMinFollowers()
-                && twitterProperties.getLanguages().contains(timeline.getLang());
     }
 }
 

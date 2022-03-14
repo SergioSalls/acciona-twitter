@@ -9,14 +9,14 @@ El proyecto acciona-twitter ha sido desarrollado en Java 11 con SpringBoot y per
 - Consultar una clasificación de todos los hashtags disponibles
 - Consultar una clasificación de los N hashtags más usados (default 10)
 
-El almacenamiento de tweets se ha basado en un cron parametrable, el cuál va recuperando datos en un intervalo de tiempo
-dónde almacena los tweets en una base de datos según unos critérios de configuración.
+El almacenamiento de tweets se ha basado en un cron parametrable el cuál va recuperando datos en un intervalo de tiempo
+los va almacenando según unos critérios de configuración.
 
 Para su almacenamiento se ha utilizado una base de datos no persitente H2 que nos permite tener acceso a ella
-mediante la url http://localhost:8080/h2-console. Para entrar en el interfaz será necesário introducir las credenciales
-que se encuentran en el fichero application.yml del proyecto.
+mediante la url http://localhost:8080/h2-console.
+Para entrar en el interfaz será necesário introducir las credenciales que se encuentran en el fichero application.yml del proyecto.
 
-Todos los criterios a tener en cuenta a la hora de persistir los tweets en la base de datos son obtenidos del fichero
+Los criterios a tener en cuenta a la hora de persistir los tweets en la base de datos son obtenidos del fichero
 application.yml.
 
 Estos criterios se definen como:

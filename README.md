@@ -19,13 +19,13 @@ que se encuentran en el fichero application.yml del proyecto.
 Todos los criterios a tener en cuenta a la hora de persistir los tweets en la base de datos son obtenidos del fichero
 application.yml.
 Estos criterios se definen como:
-twitter:
+- twitter:
   cron:
     seconds: 30 --> Nos permite definir el intervalo de tiempo en segundos que queremos que se ejecute la obtención de tweets
-  query-count: 2000 --> El número de tweets que queremos recibir por cada petición
-  min-followers: 1500 --> Número mínimo de seguidores para tener en cuenta su almacenamiento en base de datos
-  min-hashtag-count: 10 --> Número de veces mínimas que debe aparecer un hashtag para considerarlo dentro de la lista de clasificaciones de hashtags más usados
-  max-tweet-page: 100 --> Número máximo de elementos a mostrar por página en la consulta de todos los tweets almacenados
-  languages: --> Idiomas a tener en cuenta para su almacenamiento en base de datos
+- query-count: 2000 --> El número de tweets que queremos recibir por cada petición
+- min-followers: 1500 --> Número mínimo de seguidores para tener en cuenta su almacenamiento en base de datos
+- min-hashtag-count: 10 --> Número de veces mínimas que debe aparecer un hashtag para considerarlo dentro de la lista de clasificaciones de hashtags más usados
+- max-tweet-page: 100 --> Número máximo de elementos a mostrar por página en la consulta de todos los tweets almacenados
+- languages: --> Idiomas a tener en cuenta para su almacenamiento en base de datos
 
 Todo estos enpoints pueden ser probados con swagger mediante la url http://localhost:8080/swagger-ui/index.html
